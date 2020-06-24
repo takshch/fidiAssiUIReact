@@ -27,6 +27,16 @@ app.listen(process.env.PORT || 3000, () => {
     });
 });
 
+app.get("/", (request, response) => {
+    response.send(`API ENDPOINTS:<br />
+        - - - -  "/items" -- to fetch all items<br />
+        - - - -  "/add" -- to add new item<br />
+        - - - -  "/update" -- to edit price of item with id<br />
+        - - - -  "/delete" -- to delete item<br />
+    `);
+});
+
+
 app.get("/items", (request, response) => {
     collection.find({},{projection:{_id:0}}).toArray((error, result) => {
         if(error) {
