@@ -1,10 +1,12 @@
 const Express = require("express");
 const BodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
+var autoIncrement = require("mongodb-autoincrement");
 const ObjectId = require("mongodb").ObjectID;
-const CONNECTION_URL = "mongodb://fidisys-api:!%403asflkj4%23sfslkms%23@ds129023.mlab.com:29023/heroku_s9zfc9ft";
 const DATABASE_NAME = "fidisys-api";
-const  COLLECTION_NAME = "items";
+const DATABASE_PASS = "!%403asflkj4%23sfslkms%23";
+const CONNECTION_URL = `mongodb://${DATABASE_NAME}:${DATABASE_PASS}@ds129023.mlab.com:29023/heroku_s9zfc9ft`;
+const COLLECTION_NAME = "items";
 
 var app = Express();
 app.use(BodyParser.json());
@@ -36,10 +38,12 @@ app.get("/items", (request, response) => {
 
 
 app.post("/add",(request,response)=>{
-    if(("name" in request.body) && ("price" in request.body) && !isNaN(request.body.price)){
-        getNextSequence(database, COLLECTION_NAME, function(err, result){
+    if(("name" in request.body) && ("price" in request.body) && !isNaN(request.body.price) && request.body.name !== "" && request.body.price !== ""){
+
+        autoIncrement.getNextSequence(database, COLLECTION_NAME, function (err, autoIndex) {
+            var collection_local = database.collection(COLLECTION_NAME);
             if(!err){
-                database.collection(COLLECTION_NAME).insertOne({id: result, ...request.body},(error,result)=>{
+                collection_local.insertOne({id: autoIndex, ...request.body},(error,result)=>{
                     if(error){
                         return response.status(500).send(error);
                     } 
@@ -49,11 +53,14 @@ app.post("/add",(request,response)=>{
                         response.send(result.result);
                     }
                 });
+            }else if(!("name" in req.body) || !("price" in req.body) || req.body.id === "" || req.body.price === ""){
+                response.send({error: "fields are missing"});
             }
             else{
                 response.send({error: "Something is not right!"});
             }
         });
+
     }else if(!("name" in request.body) || !("price" in request.body) || request.body.name === "" || request.body.price === ""){
         response.send({error: "fields are missing"});
     }else{
@@ -63,18 +70,25 @@ app.post("/add",(request,response)=>{
 
 app.post("/update",(req,response)=>{
     if(("id" in req.body) && ("price" in req.body) && req.body.id !== "" && req.body.price !== "" && !isNaN(req.body.id)  && !isNaN(req.body.price)){
-        if(collection.find({id: req.body.id}).count() > 0){
-            collection.updateOne({id: req.body.id},{$set:{price: req.body.price}},(error,result)=>{
-                if(error){
-                    response.send({error: "Something is not right!"});
-                }
-                else if(result){
-                    response.send({status: "success",error: null});
-                }
-            });
-        }else{
-            response.send({error: "id doesn't exits"});
-        }
+        let id = parseInt(req.body.id);
+        collection.findOne({id},(error,result)=>{
+            console.log(result);
+            if(error){
+                response.send({error: "something wrong"});
+            }
+            if(result !== null && result.id === id){
+                collection.updateOne({id},{$set:{price: req.body.price}},(error,result)=>{
+                    if(error){
+                        response.send({error: "Something is not right!"});
+                    }
+                    else if(result){
+                        response.send({status: "success",error: null});
+                    }
+                });
+            }else{
+                response.send({error: "id doesn't exits"});
+            }
+        });
     }else if(!("id" in req.body) || !("price" in req.body) || req.body.id === "" || req.body.price === ""){
         response.send({error: "fields are missing"});
     }
@@ -85,30 +99,28 @@ app.post("/update",(req,response)=>{
 
 app.post("/delete",(req, response)=>{
 
-    if(("id" in req.body) && !isNaN(req.body.id) && req.body.id !== ""){
-        if(collection.find({id: req.body.id}).count() > 0){
-            collection.deleteOne({id: req.body.id},(error,result)=>{
-                if(error){
-                    response.send({error: "Something is not right!"});
-                }else if(result.deletedCount === 1){
-                    response.send({status: "deleted",error: null});
-                }
-            });
-        }else{
-            response.send({error: "id doesn't exits"})
-        }
+    if(("id" in req.body) && !isNaN(req.body.id) && req.body.id !== "" ){
+        let id = parseInt(req.body.id);
+        collection.findOne({id},(error,result)=>{
+            console.log(result);
+            if(error){
+                response.send({error: "something wrong"});
+            }
+            if(result !== null && result.id === id){
+                collection.deleteOne({id},(error,result)=>{
+                    if(error){
+                        response.send({error: "Something is not right!"});
+                    }else if(result.deletedCount === 1){
+                        response.send({status: "deleted",error: null});
+                    }
+                });
+            }else{
+                response.send({error: "id doesn't exits"});
+            }
+        });
     }else if(!("id" in req.body) || req.body.id === ""){
         response.send({error: "fields are missing"});
     }else{
-        response.send({error: "id must be number"});
+        response.send({error: "something wrong"});
     }
 });
-
-
-//AutoIncrement Function for MongoDB.....
-function getNextSequence(db, name, callback) {
-    db.collection("counters").findAndModify( { _id: name }, null, { $inc: { seq: 1 } }, function(err, result){
-        if(err) callback(err, result);
-        callback(err, result.value.seq);
-    } );
-}
