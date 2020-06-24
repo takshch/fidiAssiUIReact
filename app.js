@@ -4,7 +4,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_URL = "mongodb://127.0.0.1:27017";
 const DATABASE_NAME = "fidisys";
-
+const  COLLECTION_NAME = "items";
 
 var app = Express();
 app.use(BodyParser.json());
@@ -20,7 +20,7 @@ app.listen(5000, () => {
             throw error;
         }
         database = client.db(DATABASE_NAME);
-        collection = database.collection("items");
+        collection = database.collection(COLLECTION_NAME);
         console.log("Connected to `" + DATABASE_NAME + "`!");
     });
 });
@@ -44,9 +44,9 @@ app.get("/add", (request, response) => {
 });
 
 app.post("/add",(request,response)=>{
-    getNextSequence(database, "items", function(err, result){
+    getNextSequence(database, COLLECTION_NAME, function(err, result){
         if(!err){
-            database.collection("items").insertOne({id: result, ...request.body},(error,result)=>{
+            database.collection(COLLECTION_NAME).insertOne({id: result, ...request.body},(error,result)=>{
                 if(error){
                     return response.status(500).send(error);
                 } 
