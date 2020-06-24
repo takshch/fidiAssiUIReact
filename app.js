@@ -38,7 +38,8 @@ app.get("/items", (request, response) => {
 
 
 app.post("/add",(request,response)=>{
-    if(("name" in request.body) && ("price" in request.body) && !isNaN(request.body.price) && request.body.name !== "" && request.body.price !== ""){
+    if(("name" in request.body) && ("price" in request.body) && !isNaN(request.body.price) && request.body.name !== "" && request.body.price !== "" 
+    && typeof request.body.name === 'string' && typeof request.body.price !== 'string'){
 
         autoIncrement.getNextSequence(database, COLLECTION_NAME, function (err, autoIndex) {
             var collection_local = database.collection(COLLECTION_NAME);
@@ -64,12 +65,13 @@ app.post("/add",(request,response)=>{
     }else if(!("name" in request.body) || !("price" in request.body) || request.body.name === "" || request.body.price === ""){
         response.send({error: "fields are missing"});
     }else{
-        response.send({error: "price must be number"});
+        response.send({error: "name and price must be string and number respectively."});
     } 
 });
 
 app.post("/update",(req,response)=>{
-    if(("id" in req.body) && ("price" in req.body) && req.body.id !== "" && req.body.price !== "" && !isNaN(req.body.id)  && !isNaN(req.body.price)){
+    if(("id" in req.body) && ("price" in req.body) && req.body.id !== "" && req.body.price !== "" && !isNaN(req.body.id)  && !isNaN(req.body.price) 
+    && typeof req.body.id !== 'string' && typeof req.body.price !== 'string'){
         let id = parseInt(req.body.id);
         collection.findOne({id},(error,result)=>{
             console.log(result);
@@ -99,7 +101,7 @@ app.post("/update",(req,response)=>{
 
 app.post("/delete",(req, response)=>{
 
-    if(("id" in req.body) && !isNaN(req.body.id) && req.body.id !== "" ){
+    if(("id" in req.body) && !isNaN(req.body.id) && req.body.id !== "" && typeof req.body.id !== 'string' ){
         let id = parseInt(req.body.id);
         collection.findOne({id},(error,result)=>{
             console.log(result);
@@ -121,6 +123,6 @@ app.post("/delete",(req, response)=>{
     }else if(!("id" in req.body) || req.body.id === ""){
         response.send({error: "fields are missing"});
     }else{
-        response.send({error: "something wrong"});
+        response.send({error: "id must be number"});
     }
 });
