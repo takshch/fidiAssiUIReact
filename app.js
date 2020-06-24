@@ -3,9 +3,7 @@ const BodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 var autoIncrement = require("mongodb-autoincrement");
 const ObjectId = require("mongodb").ObjectID;
-const DATABASE_NAME = "fidisys-api";
-const DATABASE_PASS = "!%403asflkj4%23sfslkms%23";
-const CONNECTION_URL = `mongodb://${DATABASE_NAME}:${DATABASE_PASS}@ds129023.mlab.com:29023/heroku_s9zfc9ft`;
+const CONNECTION_URL = `mongodb://fidisys-api:!%403asflkj4%23sfslkms%23@ds129023.mlab.com:29023/heroku_s9zfc9ft`;
 const COLLECTION_NAME = "items";
 
 var app = Express();
@@ -23,7 +21,7 @@ app.listen(process.env.PORT || 3000, () => {
         }
         database = client.db("");
         collection = database.collection(COLLECTION_NAME);
-        console.log("Connected to `" + DATABASE_NAME + "`!");
+        console.log("Connected!");
     });
 });
 
