@@ -19,7 +19,7 @@ app.listen(process.env.PORT || 3000, () => {
         if(error) {
             throw error;
         }
-        database = client.db(DATABASE_NAME);
+        database = client.db("");
         collection = database.collection(COLLECTION_NAME);
         console.log("Connected to `" + DATABASE_NAME + "`!");
     });
