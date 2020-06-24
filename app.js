@@ -2,7 +2,7 @@ const Express = require("express");
 const BodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
-const CONNECTION_URL = "mongodb://fidisys-api:\!\@3asflkj4\#sfslkms\#@ds129023.mlab.com:29023/heroku_s9zfc9ft";
+const CONNECTION_URL = "mongodb://fidisys-api:!%403asflkj4%23sfslkms%23@ds129023.mlab.com:29023/heroku_s9zfc9ft";
 const DATABASE_NAME = "fidisys-api";
 const  COLLECTION_NAME = "items";
 
@@ -14,7 +14,7 @@ var database, collection;
 var autoIncrement = require("mongodb-autoincrement");
 const { response, request } = require("express");
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
     MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
         if(error) {
             throw error;
