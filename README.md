@@ -4,8 +4,8 @@ Open CMD or terminal
 2. git clone https://github.com/takshch/fidisysAssiAPI.git
 3. cd fidisysAssiAPI
 4. npm install
-5. change CONNECTION_URL, DATABASE_NAME , COLLECTION_NAME with your mongodb url, database name, and collection name respectively.File: (app.js)
-6. Use "node app.js" to run and url will be localhost:5000
+5. change CONNECTION_URL,COLLECTION_NAME with your mongodb url, and collection name respectively.File: (app.js)
+6. Use "npm run start" to run and url will be localhost:3000
 -------------------------------------------------------------------------
 API ENDPOINTS:
 
