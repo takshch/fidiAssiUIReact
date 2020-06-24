@@ -2,8 +2,8 @@ const Express = require("express");
 const BodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
-const CONNECTION_URL = "mongodb://127.0.0.1:27017";
-const DATABASE_NAME = "fidisys";
+const CONNECTION_URL = "mongodb://fidisys-api:\!\@3asflkj4\#sfslkms\#@ds129023.mlab.com:29023/heroku_s9zfc9ft";
+const DATABASE_NAME = "fidisys-api";
 const  COLLECTION_NAME = "items";
 
 var app = Express();
