@@ -5,7 +5,8 @@ Open CMD or terminal
 3. cd fidisysAssiAPI
 4. npm install
 
-To run in local, change CONNECTION_URL, DATABASE_NAME , COLLECTION_NAME with your mongodb url, database name, and collection name. (app.js)
+To run in local, change CONNECTION_URL, DATABASE_NAME , COLLECTION_NAME with your mongodb url, database name, and collection name respectively. 
+File: (app.js)
 
 Use "node app.js" to run and url will be localhost:5000
 -------------------------------------------------------------------------
